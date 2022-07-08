@@ -1,0 +1,3 @@
+export const AllocationPaymentReceiverAddress = '0x268c3a9614D96e86177C0Ed5043317FDA972Ab18'
+export const AllocationMarketplaceAddress = '0x268c3a9614D96e86177C0Ed5043317FDA972Ab18'
+export const NFTAddress = '0xc74BF2fa411214ac226aa1b7BE6801186d1f2c5D'

@@ -1,3 +1,0 @@
-export const AllocationPaymentReceiverAddress = '0xb49Be6bb3B708Cb02CB3c08A4b0e54aa475d3B31'
-export const AllocationMarketplaceAddress = '0x15f77CB389D16E95ffbeb8ad395Bb140B0E868E3'
-export const BusdAddress = '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56'
