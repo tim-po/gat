@@ -77,7 +77,7 @@ const AllocationCardsWrapper = styled.div`
   overflow: hidden;
 `
 
-const Text = styled.span<{fontSize?: string, width?: string, marginBottom?: string}>`
+const Text = styled.span<{ fontSize?: string, width?: string, marginBottom?: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -130,7 +130,10 @@ const App = () => {
   const allocationContract = useAllocationPaymentReceiverContract()
   const busdContract = useBUSDContract()
   const nftContract = useNftContract()
-  const [[busd, setBusd], isBusdValid] = useValidatedState<{ data: string, isValid: boolean }>({data: '', isValid: false}, validationFuncs.controlled)
+  const [[busd, setBusd], isBusdValid] = useValidatedState<{ data: string, isValid: boolean }>({
+    data: '',
+    isValid: false
+  }, validationFuncs.controlled)
   const [userNfts, setUserNfts] = useState<string[]>([])
   const [userMaxTier, setUserMaxTier] = useState<number>(-1)
 
@@ -166,30 +169,30 @@ const App = () => {
 
   const getUserNfts = async () => {
     if (account) {
-      const balance = await nftContract.methods.balanceOf('0xbDB24aa420Cfe284C9fCA7dfe5D39EAFb55E8a53').call()
+      const balance = await nftContract.methods.balanceOf(account).call()
       const nfts: string[] = []
-      for (let i = 0; i < nftTears[nftTears.length-1].endId+1; i++) {
+      for (let i = 0; i < nftTears[nftTears.length - 1].endId + 1; i++) {
         const owner = await nftContract.methods.ownerOf(i).call()
-        if(owner === '0xbDB24aa420Cfe284C9fCA7dfe5D39EAFb55E8a53'){
+        if (owner === account) {
           nfts.push(`${i}`)
         }
-        if(nfts.length >= balance){
-          let maxTear = -1
-          nftTears.forEach((tear, index) => {
-            if(tear.startId <= i){
-              maxTear = index
-            }
-          })
-          setUserMaxTier(maxTear)
+        if (nfts.length >= balance) {
           break
         }
       }
+      let maxTear = -1
+      nftTears.forEach((tear, index) => {
+        if (tear.startId <= +nfts[nfts.length - 1]) {
+          maxTear = index
+        }
+      })
+      setUserMaxTier(maxTear)
       setUserNfts(nfts)
     }
     setNftLoading(false)
   }
 
-  const checkApprove = async ()  => {
+  const checkApprove = async () => {
     if (account) {
       const busdCountApproved = await busdContract.methods.allowance(account, AllocationPaymentReceiverAddress).call()
       const weiBusd = new BigNumber(busd.data)
@@ -212,8 +215,8 @@ const App = () => {
     getNFTTears()
   }, [account])
 
-  useEffect(()=>{
-    if(nftTears.length){
+  useEffect(() => {
+    if (nftTears.length) {
       getUserNfts()
     }
   }, [account, nftTears])
@@ -232,7 +235,7 @@ const App = () => {
       const weiBusd = new BigNumber(busd.data)
       try {
         const approveRes = await checkApprove()
-        if(approveRes) {
+        if (approveRes) {
           allocationContract.methods.applyForAllocations(weiBusd, userMaxTier).send({from: account})
             .then((res: { status: any; }) => {
               if (res.status) {
@@ -253,88 +256,101 @@ const App = () => {
   return (
     <StandardAppContainer version={'1.0.1'} locales={['en']}>
       <AllocationContainer>
-       <div>
-         {transactionError ?
-           <ErrorMessage text={'Ooops... Something get wrong, please reload page and try again'} type={'primary'}/>
-           :
-           <Wrapper>
-             <Text fontSize={'24px'}>
-               <Wrapper>
-                 <img src={GATE_LOGO} alt="" className="mt-10"/>
-                 <h1 className="text-center text-2xl font-extrabold text-white mt-10 mb-10">We are prooduly happy to announce collaboration with <a href="https://www.gate.io/" target="_blank">gate.io</a></h1>
-               </Wrapper>
-               {nftCollection.length ?
-                 <>
-                   <Text fontSize={'24px'} marginBottom={'10px'}>Your balance: {userBusd?.toFixed(1)}$</Text>
-                   <Text fontSize={'14px'} width={'42%'} marginBottom={'20px'}>
-                     Please provide email that you are using for your personal account at Zima Bank.
-                     If you don’t have an account yet, please register it following that Link:
-                     <a href="https://remotebankingaccess.com/sign-up" target="_blank">https://remotebankingaccess.com/sign-up</a>
-                   </Text>
-                 </>
-                 :
-                 ''
-               }
-             </Text>
-             {nftLoading ?
-               <Spinner/>
-               :
-               <Wrapper>
-                 <AllocationCardsWrapper>
-                     {userMaxTier !== -1 &&
-                       <div style={{minWidth: 320, minHeight: 320}}>
-                         <video playsInline className={'nft-video'} width={320} height={320} autoPlay loop muted>
-                           <source src={`/Creatives/T${userMaxTier + 1}.mp4`} type="video/mp4" />
-                         </video>
-                       </div>
-                     }
-                   <CardWrapper>
-                     <div style={{width: '100%', color: 'black', fontSize: '20px', marginBottom: 20}}>{`Max allocation: ${maxallocation}$`}</div>
-                     <SimpleInput
-                       isValid={isBusdValid}
-                       id={'BUSD'}
-                       errorTooltipText={`Max allocation is ${maxallocation}`}
-                       inputProps={{
-                         type: 'number',
-                         value: busd.data,
-                         min: 1,
-                         step: 1,
-                         max: +maxallocation
-                       }}
-                       defaultValue={`${maxallocation}`}
-                       defaultValueButtonText={'Max'}
-                       hasDefaultValueButton
-                       onChangeRaw={(newValue)=> {
-                         setBusd({data: newValue, isValid: newValue !== "" && +newValue <= +maxallocation})
-                       }}
+        <div>
+          {transactionError ?
+            <ErrorMessage text={'Ooops... Something get wrong, please reload page and try again'} type={'primary'}/>
+            :
+            <Wrapper>
+              <Text fontSize={'24px'}>
+                <Wrapper>
+                  <img src={GATE_LOGO} alt="" className="mt-10"/>
+                  <h1 className="text-center text-2xl font-extrabold text-white mt-10 mb-10">We are prooduly happy to
+                    announce collaboration with <a href="https://www.gate.io/" target="_blank">gate.io</a></h1>
+                </Wrapper>
+                {nftCollection.length ?
+                  <>
+                    <Text fontSize={'24px'} marginBottom={'10px'}>Your balance: {userBusd?.toFixed(1)}$</Text>
+                    <Text fontSize={'14px'} width={'42%'} marginBottom={'20px'}>
+                      Please provide email that you are using for your personal account at Zima Bank.
+                      If you don’t have an account yet, please register it following that Link:
+                      <a href="https://remotebankingaccess.com/sign-up"
+                         target="_blank">https://remotebankingaccess.com/sign-up</a>
+                    </Text>
+                  </>
+                  :
+                  ''
+                }
+              </Text>
+              {nftLoading ?
+                <Spinner color={"white"}/>
+                :
+                <Wrapper>
+                  <AllocationCardsWrapper>
+                    {userMaxTier !== -1 &&
+                      <>
+                        <div style={{minWidth: 320, minHeight: 320}}>
+                          <video playsInline className={'nft-video'} width={320} height={320} autoPlay loop muted>
+                            <source src={`/Creatives/T${userMaxTier + 1}.mp4`} type="video/mp4"/>
+                          </video>
+                        </div>
+                        <CardWrapper>
+                          <div style={{
+                            width: '100%',
+                            color: 'black',
+                            fontSize: '20px',
+                            marginBottom: 20
+                          }}>{`Max allocation: ${maxallocation}$`}</div>
+                          <SimpleInput
+                            isValid={isBusdValid}
+                            id={'BUSD'}
+                            errorTooltipText={`Max allocation is ${maxallocation}`}
+                            inputProps={{
+                              type: 'number',
+                              value: busd.data,
+                              min: 1,
+                              step: 1,
+                              max: +maxallocation
+                            }}
+                            defaultValue={`${maxallocation}`}
+                            defaultValueButtonText={'Max'}
+                            hasDefaultValueButton
+                            onChangeRaw={(newValue) => {
+                              setBusd({data: newValue, isValid: newValue !== "" && +newValue <= +maxallocation})
+                            }}
 
-                     />
-                     {transactionLoading ?
-                       <Spinner />
-                       :
-                       <Wrapper>
-                         <WarningText>
-                           Warning! You can only buy allocation once, after payment your NFT will be burned
-                         </WarningText>
-                         <Button
-                           marginTop={20}
-                           type={"button"}
-                           textColor={isBusdValid ? "#fff" : "rgba(0, 0, 0, 0.6)"}
-                           background={isBusdValid ? "#33CC66" : "rgba(0, 0, 0, 0.2)"}
-                           onClick={isBusdValid ? sendTransaction : ()=>{}}
-                         >
-                           Buy Allocation
-                         </Button>
-                       </Wrapper>
-                     }
-                   </CardWrapper>
-                   {successModal && <SuccessModal>Transaction was successful</SuccessModal>}
-                 </AllocationCardsWrapper>
-               </Wrapper>
-             }
-           </Wrapper>
-         }
-       </div>
+                          />
+                          {transactionLoading ?
+                            <Spinner/>
+                            :
+                            <Wrapper>
+                              <WarningText>
+                                Warning! You can only buy allocation once, after payment your NFT will be burned
+                              </WarningText>
+                              <Button
+                                marginTop={20}
+                                type={"button"}
+                                textColor={isBusdValid ? "#fff" : "rgba(0, 0, 0, 0.6)"}
+                                background={isBusdValid ? "#33CC66" : "rgba(0, 0, 0, 0.2)"}
+                                onClick={isBusdValid ? sendTransaction : () => {
+                                }}
+                              >
+                                Buy Allocation
+                              </Button>
+                            </Wrapper>
+                          }
+                        </CardWrapper>
+                      </>
+                    }
+                    {userMaxTier === -1 &&
+                      <Text style={{color: 'black', marginTop: 10}} fontSize={'24px'} marginBottom={'10px'}>You dont have any NFTS to buy allocation for</Text>
+                    }
+                    {successModal && <SuccessModal>Transaction was successful</SuccessModal>}
+                  </AllocationCardsWrapper>
+                </Wrapper>
+              }
+            </Wrapper>
+          }
+        </div>
       </AllocationContainer>
     </StandardAppContainer>
   );
