@@ -285,7 +285,7 @@ const App = () => {
                        :
                        <Wrapper>
                          <WarningText>
-                           Warning! You can only buy allocation once, after payment your NFT will be burned and you won’t be able to pay again. Please provide maximum amount of desired allocation that you plan to spend.
+                           Warning! You can only buy allocation once, after payment your NFT will be burned
                          </WarningText>
                          <Button
                            bgColor="primary"
