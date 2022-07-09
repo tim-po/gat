@@ -10,7 +10,6 @@ import {useBUSDContract} from './Standard/hooks/useCommonContracts'
 import {useWeb3React} from "@web3-react/core";
 import Spinner from './Standard/components/Spinner';
 import styled from 'styled-components';
-import Button from './Standard/components/Button';
 import ErrorMessage from "./components/ErrorMessage";
 import axios from 'axios';
 import './styles/StyleOverrides.scss'
@@ -22,6 +21,34 @@ import SimpleInput from "./Standard/components/SimpleInput";
 import {AllocationPaymentReceiverAddress} from "./config/constants/contract";
 import './styles.scss'
 import {wei2eth} from "./Standard/utils/common";
+
+interface ButtonProps {
+  background: string;
+  textColor: string;
+  marginTop?: number;
+}
+
+const Button = styled.button<ButtonProps>`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 18px;
+  color: ${p => p.textColor};
+  background: ${p => p.background};
+  outline: none;
+  transition: background 0.3s ease;
+  margin-top: ${p => p.marginTop}px;
+
+  &:focus,
+  &:active {
+    outline: none;
+  }
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -35,7 +62,7 @@ const CardWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 30px;
+  padding: 12px;
   width: 100%;
 `
 
@@ -44,7 +71,8 @@ const AllocationCardsWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: rgba(255, 255, 255, 0.5);
+  width: 320px;
+  background: rgba(255, 255, 255, 1);
   border-radius: 20px;
   overflow: hidden;
 `
@@ -67,7 +95,6 @@ const Text = styled.span<{fontSize?: string, width?: string, marginBottom?: stri
 const WarningText = styled.div`
   color: red;
   font-weight: bold;
-  width: 320px;
   font-size: 12px;
   text-align: center;
 `
@@ -103,13 +130,13 @@ const App = () => {
   const allocationContract = useAllocationPaymentReceiverContract()
   const busdContract = useBUSDContract()
   const nftContract = useNftContract()
-  const [[busd, setBusd], isBusdValid] = useValidatedState<string>("", newValue => +newValue <= +allocationPrice)
+  const [[busd, setBusd], isBusdValid] = useValidatedState<{ data: string, isValid: boolean }>({data: '', isValid: false}, validationFuncs.controlled)
   const [userNfts, setUserNfts] = useState<string[]>([])
   const [userMaxTier, setUserMaxTier] = useState<number>(-1)
 
 
   const [nftCollection, setNftCollection] = useState([])
-  const [nftLoading, setNftLoading] = useState(false)
+  const [nftLoading, setNftLoading] = useState(true)
   const [allocationPrice, setAllocationPrice] = useState<string>('')
   const [totalAllocationError, setTotalAllocationError] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false)
@@ -159,12 +186,13 @@ const App = () => {
       }
       setUserNfts(nfts)
     }
+    setNftLoading(false)
   }
 
   const checkApprove = async ()  => {
     if (account) {
       const busdCountApproved = await busdContract.methods.allowance(account, AllocationPaymentReceiverAddress).call()
-      const weiBusd = new BigNumber(busd)
+      const weiBusd = new BigNumber(busd.data)
 
       if (+busdCountApproved < +weiBusd) {
         const APPROVE_TRANS = new BigNumber("115792089237316195423570985008687907853269984665640564039457584007913129639935");
@@ -201,14 +229,14 @@ const App = () => {
   const sendTransaction = async () => {
     if (busd) {
       setTransactionLoading(true)
-      const weiBusd = new BigNumber(busd)
+      const weiBusd = new BigNumber(busd.data)
       try {
         const approveRes = await checkApprove()
         if(approveRes) {
           allocationContract.methods.applyForAllocations(weiBusd, userMaxTier).send({from: account})
             .then((res: { status: any; }) => {
               if (res.status) {
-                setBusd("")
+                setBusd({data: "0", isValid: false})
                 setTransactionLoading(false)
                 showSuccessTransaction()
               }
@@ -254,32 +282,33 @@ const App = () => {
                <Wrapper>
                  <AllocationCardsWrapper>
                      {userMaxTier !== -1 &&
-                       <div>
-                         <video playsInline className={'nft-video'} width={300} height={300} autoPlay loop muted>
+                       <div style={{minWidth: 320, minHeight: 320}}>
+                         <video playsInline className={'nft-video'} width={320} height={320} autoPlay loop muted>
                            <source src={`/Creatives/T${userMaxTier + 1}.mp4`} type="video/mp4" />
                          </video>
                        </div>
                      }
                    <CardWrapper>
-                     <div style={{width: '100%', color: 'black', fontSize: '20px'}}>{`Max allocation: ${maxallocation}$`}</div>
-                     <SimpleLabelContainer label={"BUSD"} id={'BUSD'}>
-                       <SimpleInput
-                         id={'BUSD'}
-                         errorTooltipText={`Max allocation is ${maxallocation}`}
-                         inputProps={{
-                           type: 'number',
-                           value: busd,
-                           min: 1,
-                           step: 1,
-                           max: +maxallocation
-                         }}
-                         defaultValue={`${maxallocation}`}
-                         defaultValueButtonText={'Max'}
-                         hasDefaultValueButton
-                         onChangeRaw={setBusd}
+                     <div style={{width: '100%', color: 'black', fontSize: '20px', marginBottom: 20}}>{`Max allocation: ${maxallocation}$`}</div>
+                     <SimpleInput
+                       isValid={isBusdValid}
+                       id={'BUSD'}
+                       errorTooltipText={`Max allocation is ${maxallocation}`}
+                       inputProps={{
+                         type: 'number',
+                         value: busd.data,
+                         min: 1,
+                         step: 1,
+                         max: +maxallocation
+                       }}
+                       defaultValue={`${maxallocation}`}
+                       defaultValueButtonText={'Max'}
+                       hasDefaultValueButton
+                       onChangeRaw={(newValue)=> {
+                         setBusd({data: newValue, isValid: newValue !== "" && +newValue <= +maxallocation})
+                       }}
 
-                       />
-                     </SimpleLabelContainer>
+                     />
                      {transactionLoading ?
                        <Spinner />
                        :
@@ -288,13 +317,13 @@ const App = () => {
                            Warning! You can only buy allocation once, after payment your NFT will be burned
                          </WarningText>
                          <Button
-                           bgColor="primary"
-                           className="w-40 mt-5"
-                           onClick={sendTransaction}
-                           uppercase={false}
-                           disabled={isBusdValid}
+                           marginTop={20}
+                           type={"button"}
+                           textColor={isBusdValid ? "#fff" : "rgba(0, 0, 0, 0.6)"}
+                           background={isBusdValid ? "#33CC66" : "rgba(0, 0, 0, 0.2)"}
+                           onClick={isBusdValid ? sendTransaction : ()=>{}}
                          >
-                           Buy allocation
+                           Buy Allocation
                          </Button>
                        </Wrapper>
                      }

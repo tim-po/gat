@@ -1,7 +1,9 @@
 .input-container.style-override{
+    width: 100%;
+    margin-bottom: 16px;
+
     .SimpleInput{
         &:hover{
-            border: 1px solid rgba(255, 255, 255, 0);
         }
 
         &.not-valid{
@@ -10,8 +12,16 @@
         &::placeholder{
         }
 
+        &::-webkit-outer-spin-button{
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
         &:focus{
-            border: 2px solid rgba(255, 255, 255, 0);
         }
     }
     .simple-input-form{
