@@ -104,8 +104,8 @@ const SuccessModal = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: #e5e5e51f;
-  color: white;
+  background: rgba(0, 0, 0, 0.2);
+  color: black;
   width: 380px;
   border-radius: 10px;
   margin-top: 20px;
@@ -195,11 +195,17 @@ const App = () => {
   const checkApprove = async () => {
     if (account) {
       const busdCountApproved = await busdContract.methods.allowance(account, AllocationPaymentReceiverAddress).call()
+      const nftCountApproved = await nftContract.methods.isApprovedForAll(account, AllocationPaymentReceiverAddress).call()
       const weiBusd = new BigNumber(busd.data)
 
       if (+busdCountApproved < +weiBusd) {
         const APPROVE_TRANS = new BigNumber("115792089237316195423570985008687907853269984665640564039457584007913129639935");
         await busdContract.methods.approve(AllocationPaymentReceiverAddress, APPROVE_TRANS).send({from: account})
+      }
+
+      console.log(nftCountApproved)
+      if(!nftCountApproved){
+        await nftContract.methods.setApprovalForAll(AllocationPaymentReceiverAddress, true).send({from: account})
       }
 
       return true
@@ -232,11 +238,11 @@ const App = () => {
   const sendTransaction = async () => {
     if (busd) {
       setTransactionLoading(true)
-      const weiBusd = new BigNumber(busd.data)
+      // const weiBusd = new BigNumber(busd.data)
       try {
         const approveRes = await checkApprove()
         if (approveRes) {
-          allocationContract.methods.applyForAllocations(weiBusd, userMaxTier).send({from: account})
+          allocationContract.methods.applyForAllocation(busd.data, userNfts[userNfts.length - 1]).send({from: account})
             .then((res: { status: any; }) => {
               if (res.status) {
                 setBusd({data: "0", isValid: false})
@@ -246,6 +252,7 @@ const App = () => {
             })
         }
       } catch (e) {
+        console.log(e)
         setTransactionError(true)
       }
     }
