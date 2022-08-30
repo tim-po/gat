@@ -1,4 +1,4 @@
-.default-value-button{
+.default-value-button {
     transition: all 0.2s;
     position: absolute;
     z-index: 2;
@@ -18,10 +18,10 @@
     justify-content: center;
 }
 
-.default-value-button:hover{
+.default-value-button:hover {
     background: rgba(255, 255, 255, 0.2);
 }
 
-.input-container{
+.input-container {
     position: relative;
 }

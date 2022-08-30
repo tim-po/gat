@@ -35,7 +35,7 @@ const SimpleInputDefaultProps = {
   defaultValue: "",
   onlyEmmitOnBlur: false,
   inputProps: {type: "text"},
-  isValid: true
+  isValid: true,
 };
 
 const SimpleInput = (props: SimpleInputPropType) => {
@@ -61,7 +61,7 @@ const SimpleInput = (props: SimpleInputPropType) => {
     onFocusRaw,
     onlyEmmitOnBlur,
     required,
-    displayAsLabel
+    displayAsLabel,
   } = props;
 
   const {forceValidate} = useContext(ForceValidateContext)
@@ -131,20 +131,25 @@ const SimpleInput = (props: SimpleInputPropType) => {
         onChange={onChangeInner}
         onFocus={onFocusInner}
         onBlur={onBlurInner}
-        className={`SimpleInput ${shouldDisplayAsValid ? "" : "not-valid"} ${className || ""} ${displayAsLabel ? 'display-as-label' : ''}`}
+        className={`
+          SimpleInput 
+          ${shouldDisplayAsValid ? "" : "not-valid"} 
+          ${className || ""} 
+          ${displayAsLabel ? 'display-as-label' : ''}
+          `}
         placeholder={displayAsLabel ? "-" : placeholder}
         type={type}
         autoComplete={autoComplete}
       />
       {(hasDefaultValueButton && !displayAsLabel && props.inputProps.className && !props.inputProps.className.includes('skeleton')) &&
-      <button type={"button"} className={`default-value-button`} onClick={setDefaultValue}>
-        {defaultValueButtonText}
-      </button>
+        <button type={"button"} className={`default-value-button`} onClick={setDefaultValue}>
+          {defaultValueButtonText}
+        </button>
       }
       {(props.inputProps.className && !displayAsLabel && !props.inputProps.className.includes('skeleton')) &&
-      <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
-        {(required && value === "") ? "Field is required" : errorTooltipText}
-      </div>
+        <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
+          {(required && value === "") ? "Field is required" : errorTooltipText}
+        </div>
       }
     </div>
   );
