@@ -79,9 +79,12 @@ const WalletConnector = (props: WalletConnectorPropType) => {
 
   useEffect(() => {
     const initNetwork = async () => {
+      console.log(chainId)
       if (56 !== chainId) {
         await switchNetwork();
-        alert("To continue please switch your network to BSC")
+        if(chainId !== undefined){
+          alert("To continue please switch your network to BSC")
+        }
       }
     };
     initNetwork();
@@ -171,7 +174,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                 onClick={() => {
                   history.replace({search: 'collection=open'})
                   setIsConnectorOpen(false)
-                  setAccentedControlButton(2)
+                  // setAccentedControlButton(2)
                 }}
               >
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
