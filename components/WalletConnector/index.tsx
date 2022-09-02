@@ -81,6 +81,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
     const initNetwork = async () => {
       if (56 !== chainId) {
         await switchNetwork();
+        alert("To continue please switch your network to BSC")
       }
     };
     initNetwork();
