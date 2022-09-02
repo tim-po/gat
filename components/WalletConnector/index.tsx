@@ -80,10 +80,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
   useEffect(() => {
     const initNetwork = async () => {
       console.log(chainId)
-      if (56 !== chainId) {
-        await switchNetwork();
-        if(chainId !== undefined){
-          alert("To continue please switch your network to BSC")
+      if(error && error?.name === 'UnsupportedChainIdError'){
+        alert("To continue please switch your network to BSC")
+        if (56 !== chainId) {
+          await switchNetwork();
         }
       }
     };
