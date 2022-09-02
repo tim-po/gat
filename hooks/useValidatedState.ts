@@ -16,6 +16,18 @@ export const validationFuncs = {
   controlled: (newValue: ControlledValidationState<any>): boolean => newValue.isValid
 }
 
+export const validationDateFuncs = {
+  dateIsNotGreaterThanToday: (newValue: string): boolean => {
+    const newDateValue = newValue.split('.')
+    const formatDate = new Date(parseInt(
+      newDateValue[2]),
+      parseInt(newDateValue[1])-1,
+      parseInt(newDateValue[0])
+    );
+    return new Date().getTime() > formatDate.getTime()
+  }
+}
+
 export const validationFuncsFactory = {
   inArray: <T>(array: T[]): ((newValue: T)=> boolean) => {
     return (newValue: T) => array.includes(newValue)

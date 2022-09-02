@@ -107,7 +107,7 @@ const SimpleAutocomplete = (props: SimpleAutocompletePropType) => {
                 </span>
             </AutoComplete>
             <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
-                {(required && value === "") ? "field is required" : errorTooltipText}
+                {(required && value === "") ? "Field is required" : errorTooltipText}
             </div>
         </div>
     );

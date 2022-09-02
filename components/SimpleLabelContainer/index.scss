@@ -5,7 +5,25 @@
 
 .simple-input-label{
     font-size: 16px;
-    margin-bottom: 8px;
+    font-weight: 600;
+    margin-bottom: 4px;
     display: block;
     color: black;
+}
+
+.simple-input-form.display-as-label{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    & .input-container{
+        margin-bottom: 0;
+    }
+
+    & .simple-input-label{
+        margin-bottom: 0;
+        &:after{
+            content: ":";
+        }
+    }
 }

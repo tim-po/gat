@@ -9,6 +9,7 @@ import "./index.scss";
 
 interface  SimpleLabelContainerPropType {
     // You should declare props like this, delete this if you don't need props
+    displayAsLabel?: boolean
     id?: string
     label?: string
     children: string | React.ReactNode
@@ -19,12 +20,13 @@ const  SimpleLabelContainer = (props:  SimpleLabelContainerPropType) => {
     const {
         label,
         id,
+        displayAsLabel,
         children
     } = props;
 
 
     return (
-        <section className={`relative w-full simple-input-form`}>
+        <section className={`relative w-full simple-input-form ${displayAsLabel ? 'display-as-label': ''}`}>
             {label &&
                 <label htmlFor={id} className={"simple-input-label"}>
                     {label}

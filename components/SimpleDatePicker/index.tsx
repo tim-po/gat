@@ -109,7 +109,7 @@ const SimpleDatePicker = (props: SimpleDatePickerPropType) => {
                 id={id}
             />
             <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
-              {(required && value === "") ? "field is required" : errorTooltipText}
+              {(required && value === "") ? "Field is required" : errorTooltipText}
             </div>
           </>
       }
