@@ -47,6 +47,9 @@ const WalletConnector = (props: WalletConnectorPropType) => {
 
   function mainButtonClick() {
     setIsConnectorOpen(!isConnectorOpen)
+    if (56 !== chainId) {
+      alert("To continue please switch your network to BSC")
+    }
   }
 
   // useEffect(()=>{
@@ -79,12 +82,8 @@ const WalletConnector = (props: WalletConnectorPropType) => {
 
   useEffect(() => {
     const initNetwork = async () => {
-      console.log(chainId)
-      if(error && error?.name === 'UnsupportedChainIdError'){
-        alert("To continue please switch your network to BSC")
-        if (56 !== chainId) {
-          await switchNetwork();
-        }
+      if (56 !== chainId) {
+        await switchNetwork();
       }
     };
     initNetwork();
