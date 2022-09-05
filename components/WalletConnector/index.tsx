@@ -14,7 +14,9 @@ import Swoosh from '../../images/NegativeBorderRadiusRight'
 import WalletConnectorBubbleContext from "../../WalletConnectorBubbleContext";
 import NotificationContext from "../../utils/NotificationContext";
 import DisconnectWallletIcon from '../../icons/notificationIcon/index'
+import button from "../Button";
 
+export type HeaderButton = ((props: { onClick: () => void;}) => JSX.Element)
 // CONSTANTS
 
 // DEFAULT FUNCTIONS
@@ -23,12 +25,11 @@ import DisconnectWallletIcon from '../../icons/notificationIcon/index'
 
 type WalletConnectorPropType = {
   // You should declare props like this, delete this if you don't need props
-
+  buttons: HeaderButton[]
 }
 
 const WalletConnectorDefaultProps = {
   // You should declare default props like this, delete this if you don't need props
-
 }
 
 const WalletConnector = (props: WalletConnectorPropType) => {
@@ -37,6 +38,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
   const notificationContext = useContext(NotificationContext)
   const {chainId, account, deactivate, activate, active, connector, error} = useWeb3React();
   const ref = useRef(null);
+  const {buttons} = props
 
   const [isConnectorOpen, setIsConnectorOpen] = useState(false)
   const [isCopyShowing, setIsCopyShowing] = useState(false)
@@ -99,6 +101,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
     } else {
       return document.execCommand('copy', true, text);
     }
+  }
+
+  const onClickConnectorButton = () => {
+    setIsConnectorOpen(false)
   }
 
   return (
@@ -168,23 +174,13 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                   {/*</svg>*/}
                 </div>
               </button>
-              <button
-                className={`connection-button ${accentedControlButton === 2 ? 'accented' : ''}`}
-                onClick={() => {
-                  history.replace({search: 'collection=open'})
-                  setIsConnectorOpen(false)
-                  // setAccentedControlButton(2)
-                }}
-              >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M0 14C0 11.2386 2.23858 9 5 9H11C13.7614 9 16 11.2386 16 14V14C16 15.1046 15.1046 16 14 16H2C0.895431 16 0 15.1046 0 14V14Z"
-                    fill="white"/>
-                  <rect x="4" width="8" height="8" rx="4" fill="white"/>
-                </svg>
-                <div style={{marginRight: 12}}/>
-                {localized(texts.collection, locale)}
-              </button>
+              {buttons.map((item) => {
+                  const Component = item
+                  return (
+                    <Component onClick={onClickConnectorButton}/>
+                  )
+                })
+              }
               <button
                 className="connection-button"
                 // style={{color: 'red', fontWeight: 'bold'}}

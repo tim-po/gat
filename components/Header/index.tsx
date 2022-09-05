@@ -10,16 +10,19 @@ import logoSmall from '../../images/MMProLogoSmall.svg'
 import arrowUp from '../../images/arrowUpWhite.svg'
 import {LocaleSelector} from "../LocaleSelector";
 import MetamaskJazzicon from "../MetamaskJazzicon";
-import {Link} from "react-router-dom";
-import WalletConnector from "../WalletConnector";
+import {Link, useHistory} from "react-router-dom";
+import WalletConnector, {HeaderButton} from "../WalletConnector";
+import {localized} from "../../utils/localized";
+import texts from "../WalletConnector/localization";
 
 const HeaderDefaultProps = {
   logoHref: 'https://marketmaking.pro/'
 }
 
-const Header = (props: { headerButtons?: React.ReactElement[], logoHref?: string, hideWalletConnector?: boolean, locales: string[], pages?: { title: string, url: string }[] }) => {
-  const {locales, pages, logoHref, hideWalletConnector, headerButtons} = props
+const Header = (props: { headerButtons?: React.ReactElement[], connectorButtons: HeaderButton[], logoHref?: string, hideWalletConnector?: boolean, locales: string[], pages?: { title: string, url: string }[] }) => {
+  const {locales, pages, logoHref, hideWalletConnector, headerButtons, connectorButtons} = props
   const [selectedPage, setSelectedPage] = useState(pages ? pages[0].url : '')
+  const history = useHistory()
 
   useEffect(() => {
     setSelectedPage(window.location.pathname)
@@ -73,7 +76,7 @@ const Header = (props: { headerButtons?: React.ReactElement[], logoHref?: string
             <LocaleSelector locales={locales}/>
             }
             {!hideWalletConnector &&
-            <WalletConnector/>
+            <WalletConnector buttons={connectorButtons}/>
             }
           </div>
         </div>
