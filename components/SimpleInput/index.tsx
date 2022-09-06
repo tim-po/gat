@@ -1,6 +1,9 @@
 import React, {useContext, useState} from "react";
 import "./index.css";
 import ForceValidateContext from "../../ForceValidateContext";
+import texts from './localization';
+import {localized} from "../../utils/localized";
+import LocaleContext from "../../LocaleContext";
 
 // CONSTANTS
 
@@ -63,6 +66,8 @@ const SimpleInput = (props: SimpleInputPropType) => {
     required,
     displayAsLabel,
   } = props;
+
+  const {locale} = useContext(LocaleContext)
 
   const {forceValidate} = useContext(ForceValidateContext)
   const [didUserInput, setDidUserInput] = useState(false);
@@ -148,7 +153,7 @@ const SimpleInput = (props: SimpleInputPropType) => {
       }
       {(props.inputProps.className && !displayAsLabel && !props.inputProps.className.includes('skeleton')) &&
         <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
-          {(required && value === "") ? "Field is required" : errorTooltipText}
+          {(required && value === "") ? `${localized(texts.fieldIsRequired, locale)}` : errorTooltipText}
         </div>
       }
     </div>
