@@ -42,18 +42,9 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
   const [notificationTitle, setNotificationTitle] = useState('')
   const [notificationSubtitle, setNotificationSubtitle] = useState('')
   const [notificationIcon, setNotificationIcon] = useState<ReactNode>(null)
-
-  useConnectionCheck();
-
   const [bubbleValue, setBubbleValue] = useState('');
 
-  useEffect(() => {
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized && !active && !networkError) {
-        activate(injected);
-      }
-    });
-  }, [activate, networkError]);
+  useConnectionCheck();
 
   const displayNotification = (title: string, subtitle: string, icon: ReactNode) => {
     setNotificationIcon(icon)
@@ -64,6 +55,15 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
       setShouldDisplayNotification(false);
     }, 2500);
   };
+
+
+  useEffect(() => {
+    injected.isAuthorized().then((isAuthorized) => {
+      if (isAuthorized && !active && !networkError) {
+        activate(injected);
+      }
+    });
+  }, [activate, networkError]);
 
   return (
     // @ts-ignore
