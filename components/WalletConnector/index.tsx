@@ -12,12 +12,13 @@ import {injected, switchNetwork, walletconnect} from "../../wallet";
 import Swoosh from '../../images/NegativeBorderRadiusRight'
 import WalletConnectorBubbleContext from "../../WalletConnectorBubbleContext";
 import NotificationContext from "../../utils/NotificationContext";
+import UserDataContext from "../../UserDataContext";
 import DisconnectWallletIcon from '../../icons/notificationIcon/index'
 import button from "../Button";
 import WarningCircle from '../../icons/WarningCircle';
 import PersonalData from '../../icons/PersonalData';
 
-export type HeaderButton = ((props: { onClick: () => void;}) => JSX.Element)
+export type HeaderButton = ((props: { onClick: () => void; }) => JSX.Element)
 // CONSTANTS
 
 // DEFAULT FUNCTIONS
@@ -37,10 +38,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
   const {locale} = useContext(LocaleContext)
   const {bubbleValue} = useContext(WalletConnectorBubbleContext)
   const notificationContext = useContext(NotificationContext)
+  const {isUserVerified} = useContext(UserDataContext)
   const {chainId, account, deactivate, activate, active, connector, error} = useWeb3React();
   const ref = useRef(null);
   const {buttons} = props
-
   const [isConnectorOpen, setIsConnectorOpen] = useState(false)
   const [isCopyShowing, setIsCopyShowing] = useState(false)
 
@@ -116,7 +117,8 @@ const WalletConnector = (props: WalletConnectorPropType) => {
           {active &&
             <>
               <MetamaskJazzicon/>
-              <span className={`connect-title ${isConnectorOpen ? 'open' : ''}`} style={{height: 30}}>{localized(texts.profile, locale)}</span>
+              <span className={`connect-title ${isConnectorOpen ? 'open' : ''}`}
+                    style={{height: 30}}>{localized(texts.profile, locale)}</span>
             </>
           }
           {!active &&
@@ -151,18 +153,18 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                 }}
               >
                 <div className={'bordered'}>
-                  <WarningCircle />
+                  {isUserVerified ? <PersonalData/> : <WarningCircle/>}
                   <div style={{marginRight: 12}}/>
-                  {localized(texts.verifyPersonalData, locale)}
+                  {isUserVerified ? localized(texts.personalData, locale) : localized(texts.verifyPersonalData, locale)}
                   <div style={{marginRight: 12}}/>
                 </div>
               </button>
               {buttons.map((item, index) => {
-                  const Component = item
-                  return (
-                    <Component key={index} onClick={onClickConnectorButton}/>
-                  )
-                })
+                const Component = item
+                return (
+                  <Component key={index} onClick={onClickConnectorButton}/>
+                )
+              })
               }
               <button
                 className="connection-button"
@@ -201,7 +203,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                 className={`connection-button`}
                 onClick={() => {
                   activate(walletconnect).then(() => {
-                     window.location.reload()
+                    window.location.reload()
                   });
                 }}
               >
