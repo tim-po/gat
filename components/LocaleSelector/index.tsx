@@ -8,7 +8,6 @@ export const LocaleSelector = (props: {locales: string[]}) => {
   const {locales} = props
   const [isOpened, setIsOpened] = useState(false)
   const {setLocale, locale} = useContext(LocaleContext)
-  const [selected, setSelected] = useState(locale)
 
   const ref = useRef(null)
   useOnClickOutside(ref, () => setIsOpened(false))
@@ -26,7 +25,6 @@ export const LocaleSelector = (props: {locales: string[]}) => {
           style={(locale !== loc && isOpened) ? {top: (index + 1) * 50 - (locales.indexOf(locale) > index ? 0: 50)}: {}}
           onClick={()=>{
             setLocale(loc)
-            setSelected(loc)
             setIsOpened(!isOpened)
           }}
         >

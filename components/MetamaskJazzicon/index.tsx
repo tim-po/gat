@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef} from "react";
+import React, {useEffect} from "react";
 import './index.css'
 import {useWeb3React} from "@web3-react/core";
 // @ts-ignore

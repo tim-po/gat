@@ -9,7 +9,6 @@ import {useWeb3React} from "@web3-react/core";
 import useOnClickOutside from "../../hooks/useOnClickOutside";
 import './index.scss'
 import {injected, switchNetwork, walletconnect} from "../../wallet";
-import {useHistory} from "react-router-dom";
 import Swoosh from '../../images/NegativeBorderRadiusRight'
 import WalletConnectorBubbleContext from "../../WalletConnectorBubbleContext";
 import NotificationContext from "../../utils/NotificationContext";
@@ -34,7 +33,7 @@ const WalletConnectorDefaultProps = {
 
 const WalletConnector = (props: WalletConnectorPropType) => {
   const {locale} = useContext(LocaleContext)
-  const {bubbleValue, setAccentedControlButton, accentedControlButton} = useContext(WalletConnectorBubbleContext)
+  const {bubbleValue} = useContext(WalletConnectorBubbleContext)
   const notificationContext = useContext(NotificationContext)
   const {chainId, account, deactivate, activate, active, connector, error} = useWeb3React();
   const ref = useRef(null);
@@ -42,8 +41,6 @@ const WalletConnector = (props: WalletConnectorPropType) => {
 
   const [isConnectorOpen, setIsConnectorOpen] = useState(false)
   const [isCopyShowing, setIsCopyShowing] = useState(false)
-  const [visualWaletFix, setVisualWaletFix] = useState(false)
-  const history = useHistory()
 
   useOnClickOutside(ref, () => setIsConnectorOpen(false))
 
@@ -53,12 +50,6 @@ const WalletConnector = (props: WalletConnectorPropType) => {
       alert("To continue please switch your network to BSC")
     }
   }
-
-  // useEffect(()=>{
-  //     setTimeout(()=>{
-  //         setVisualWaletFix(false)
-  //     }, 1000)
-  // }, [])
 
   function disconect() {
     setIsConnectorOpen(!isConnectorOpen)
@@ -117,7 +108,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
       >
         {/* @ts-ignore */}
         <Button
-          className={`wallet-button ${(active || visualWaletFix) ? 'connected' : 'not-connected'} 
+          className={`wallet-button ${(active) ? 'connected' : 'not-connected'} 
                     ${isConnectorOpen ? 'open' : ''}`} onClick={mainButtonClick}
         >
           {active &&
@@ -136,10 +127,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
         </Button>
         {active &&
           <div
-            className={`connect-wallet-flex ${isConnectorOpen ? 'open' : ''} ${(active || visualWaletFix) ? 'connected' : 'not-connected'} `}>
+            className={`connect-wallet-flex ${isConnectorOpen ? 'open' : ''} ${(active) ? 'connected' : 'not-connected'} `}>
             <div className={`connector-options ${isConnectorOpen ? 'open' : ''}`}>
               <button
-                className={`connection-button ${accentedControlButton === 0 ? 'accented' : ''}`}
+                className={`connection-button`}
                 onClick={() => {
                   copyTextToClipboard(`${account}`)
                 }}
@@ -150,7 +141,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                             peekOut={isCopyShowing}/>
               </button>
               <button
-                className={`connection-button ${accentedControlButton === 1 ? 'accented' : ''}`}
+                className={`connection-button`}
                 style={{paddingLeft: 0, paddingRight: 0}}
                 // onClick={() => {
                 //   window.open('https://kyc-7pb.pages.dev/', '_blank')
@@ -174,10 +165,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                   {/*</svg>*/}
                 </div>
               </button>
-              {buttons.map((item) => {
+              {buttons.map((item, index) => {
                   const Component = item
                   return (
-                    <Component onClick={onClickConnectorButton}/>
+                    <Component key={index} onClick={onClickConnectorButton}/>
                   )
                 })
               }
@@ -200,7 +191,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
           <div className={'connect-wallet-flex'}>
             <div className={`connector-options ${isConnectorOpen ? 'open' : ''}`}>
               <div
-                className={`connection-button ${accentedControlButton === 3 ? 'accented' : ''}`}
+                className={`connection-button`}
                 onClick={() => {
                   activate(injected);
                 }}
@@ -215,7 +206,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                 <p>MetaMask</p>
               </div>
               <div
-                className={`connection-button ${accentedControlButton === 4 ? 'accented' : ''}`}
+                className={`connection-button`}
                 onClick={() => {
                   activate(walletconnect).then(() => {
                      window.location.reload()

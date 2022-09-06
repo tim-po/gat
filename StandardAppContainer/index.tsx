@@ -49,15 +49,6 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
   useConnectionCheck();
 
   const [bubbleValue, setBubbleValue] = useState('');
-  const [accentedControlButton, setAccentedControlButton] = useState(-1);
-
-  const changeAccentedButton = (newIndex: number) => {
-    if (accentedControlButton === newIndex) {
-      setAccentedControlButton(-1)
-    } else {
-      setAccentedControlButton(newIndex)
-    }
-  }
 
   const displayNotification = (title: string, subtitle: string, icon: ReactNode) => {
     setNotificationIcon(icon)
@@ -100,46 +91,44 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
     // @ts-ignore
     <ConfigProvider getPopupContainer={trigger => trigger.parentElement}>
       <LocaleContext.Provider value={{setLocale, locale}}>
-       <UserDataContext.Provider value={{isUserVerified}}>
-         <WalletConnectorBubbleContext.Provider value={{
-           setBubbleValue: setBubbleValue,
-           bubbleValue: bubbleValue,
-           setAccentedControlButton: changeAccentedButton,
-           accentedControlButton: accentedControlButton
-         }}>
-           <NotificationContext.Provider
-             value={{
-               displayNotification
-             }}
-           >
-             <div className={`main-content-container ${isDarkBG ? "main-gradient" : "main-gradient-light"}`}>
-               <div className={`notification ${shouldDisplayNotification ? "shown" : ""}`}>
-                 <TitleWrapper>
-                   {notificationIcon}
-                   <div className={"notification-title"}>
-                     {notificationTitle}
-                   </div>
-                 </TitleWrapper>
-                 <div className={"notification-body"}>
-                   {notificationSubtitle}
-                 </div>
-               </div>
-               <Header
-                 connectorButtons={connectorButtons}
-                 logoHref={logoHref}
-                 hideWalletConnector={hideWalletConnector}
-                 pages={pages}
-                 locales={locales}
-                 headerButtons={headerButtons}
-               />
-               <div className={"children-container"}>
-                 {props.children}
-                 <Footer version={version}/>
-               </div>
-             </div>
-           </NotificationContext.Provider>
-         </WalletConnectorBubbleContext.Provider>
-       </UserDataContext.Provider>
+        <UserDataContext.Provider value={{isUserVerified}}>
+          <WalletConnectorBubbleContext.Provider value={{
+            setBubbleValue: setBubbleValue,
+            bubbleValue: bubbleValue,
+          }}>
+            <NotificationContext.Provider
+              value={{
+                displayNotification
+              }}
+            >
+              <div className={`main-content-container ${isDarkBG ? "main-gradient" : "main-gradient-light"}`}>
+                <div className={`notification ${shouldDisplayNotification ? "shown" : ""}`}>
+                  <TitleWrapper>
+                    {notificationIcon}
+                    <div className={"notification-title"}>
+                      {notificationTitle}
+                    </div>
+                  </TitleWrapper>
+                  <div className={"notification-body"}>
+                    {notificationSubtitle}
+                  </div>
+                </div>
+                <Header
+                  connectorButtons={connectorButtons}
+                  logoHref={logoHref}
+                  hideWalletConnector={hideWalletConnector}
+                  pages={pages}
+                  locales={locales}
+                  headerButtons={headerButtons}
+                />
+                <div className={"children-container"}>
+                  {props.children}
+                  <Footer version={version}/>
+                </div>
+              </div>
+            </NotificationContext.Provider>
+          </WalletConnectorBubbleContext.Provider>
+        </UserDataContext.Provider>
       </LocaleContext.Provider>
     </ConfigProvider>
   );
