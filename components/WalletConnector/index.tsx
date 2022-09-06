@@ -14,6 +14,8 @@ import WalletConnectorBubbleContext from "../../WalletConnectorBubbleContext";
 import NotificationContext from "../../utils/NotificationContext";
 import DisconnectWallletIcon from '../../icons/notificationIcon/index'
 import button from "../Button";
+import WarningCircle from '../../icons/WarningCircle';
+import PersonalData from '../../icons/PersonalData';
 
 export type HeaderButton = ((props: { onClick: () => void;}) => JSX.Element)
 // CONSTANTS
@@ -143,10 +145,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
               <button
                 className={`connection-button`}
                 style={{paddingLeft: 0, paddingRight: 0}}
-                // onClick={() => {
-                //   window.open('https://kyc-7pb.pages.dev/', '_blank')
-                //   setIsConnectorOpen(false)
-                // }}
+                onClick={() => {
+                  window.open('https://kyc-7pb.pages.dev/', '_blank')
+                  setIsConnectorOpen(false)
+                }}
               >
                 <div className={'bordered'}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
