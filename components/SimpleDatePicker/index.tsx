@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import "./index.scss";
-import {ConfigProvider, DatePicker} from "antd";
+import texts from './localization';
+import {localized} from "../../utils/localized";
+import {DatePicker} from "antd";
 import moment from "moment";
+import LocaleContext from "../../LocaleContext";
 
 // CONSTANTS
 
@@ -50,6 +53,8 @@ const SimpleDatePicker = (props: SimpleDatePickerPropType) => {
     placeholder,
     displayAsLabel
   } = props;
+
+  const {locale} = useContext(LocaleContext)
 
   const [didUserInput, setDidUserInput] = useState(false);
   const shouldDisplayAsValid = (!required && isValid) || (required && value !== "" && isValid) || !didUserInput
@@ -109,7 +114,7 @@ const SimpleDatePicker = (props: SimpleDatePickerPropType) => {
                 id={id}
             />
             <div className={`validation-error-tooltip ${shouldDisplayAsValid ? "" : "active"}`}>
-              {(required && value === "") ? "Field is required" : errorTooltipText}
+              {(required && value === "") ? `${localized(texts.fieldIsRequired, locale)}` : errorTooltipText}
             </div>
           </>
       }
