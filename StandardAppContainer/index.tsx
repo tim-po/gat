@@ -13,7 +13,7 @@ import "./index.css";
 import "../styles.scss";
 import {ConfigProvider} from "antd";
 import WalletConnectorBubbleContext from "Standard/WalletConnectorBubbleContext";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import {HeaderButton} from "../components/WalletConnector";
 
 const defaultProps = {
@@ -46,15 +46,6 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
   useConnectionCheck();
 
   const [bubbleValue, setBubbleValue] = useState('');
-  const [accentedControlButton, setAccentedControlButton] = useState(-1);
-
-  const changeAccentedButton = (newIndex: number) => {
-    if (accentedControlButton === newIndex) {
-      setAccentedControlButton(-1)
-    } else {
-      setAccentedControlButton(newIndex)
-    }
-  }
 
   useEffect(() => {
     injected.isAuthorized().then((isAuthorized) => {
@@ -81,8 +72,6 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
         <WalletConnectorBubbleContext.Provider value={{
           setBubbleValue: setBubbleValue,
           bubbleValue: bubbleValue,
-          setAccentedControlButton: changeAccentedButton,
-          accentedControlButton: accentedControlButton
         }}>
           <NotificationContext.Provider
             value={{

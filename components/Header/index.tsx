@@ -1,19 +1,10 @@
 import React, {useEffect, useState} from "react";
-import Button from "../Button.js";
-import ConnectModal from "../ConnectModal";
-import {useWeb3React} from "@web3-react/core";
 import './index.css'
-// @ts-ignore
-import {HidingText} from "../HidingText";
 import logo from '../../images/MMProLogo.svg'
 import logoSmall from '../../images/MMProLogoSmall.svg'
-import arrowUp from '../../images/arrowUpWhite.svg'
 import {LocaleSelector} from "../LocaleSelector";
-import MetamaskJazzicon from "../MetamaskJazzicon";
-import {Link, useHistory} from "react-router-dom";
+import {Link} from "react-router-dom";
 import WalletConnector, {HeaderButton} from "../WalletConnector";
-import {localized} from "../../utils/localized";
-import texts from "../WalletConnector/localization";
 
 const HeaderDefaultProps = {
   logoHref: 'https://marketmaking.pro/'
@@ -22,7 +13,6 @@ const HeaderDefaultProps = {
 const Header = (props: { headerButtons?: React.ReactElement[], connectorButtons: HeaderButton[], logoHref?: string, hideWalletConnector?: boolean, locales: string[], pages?: { title: string, url: string }[] }) => {
   const {locales, pages, logoHref, hideWalletConnector, headerButtons, connectorButtons} = props
   const [selectedPage, setSelectedPage] = useState(pages ? pages[0].url : '')
-  const history = useHistory()
 
   useEffect(() => {
     setSelectedPage(window.location.pathname)
@@ -53,6 +43,7 @@ const Header = (props: { headerButtons?: React.ReactElement[], connectorButtons:
               <>
                 {pages.map(page => (
                   <Link
+                    key={page.title}
                     className={`page-tab ${selectedPage === page.url && 'tab-selected'}`}
                     onClick={() => {
                       setSelectedPage(page.url)
