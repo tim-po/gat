@@ -14,6 +14,7 @@ import "../styles.scss";
 import {ConfigProvider} from "antd";
 import WalletConnectorBubbleContext from "Standard/WalletConnectorBubbleContext";
 import styled, {css} from "styled-components";
+import {HeaderButton} from "../components/WalletConnector";
 
 const defaultProps = {
   locales: ["en"]
@@ -27,8 +28,8 @@ const TitleWrapper = styled.div`
   margin-bottom: 10px;
 `
 
-const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], logoHref?: string, hideWalletConnector?: boolean, children: any, locales: string[], isDarkBG?: boolean, version: string, pages?: { title: string, url: string }[] }) => {
-  const {locales, isDarkBG, version, pages, logoHref, hideWalletConnector, headerButtons} = props;
+const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], logoHref?: string, connectorButtons: HeaderButton[], hideWalletConnector?: boolean, children: any, locales: string[], isDarkBG?: boolean, version: string, pages?: { title: string, url: string }[] }) => {
+  const {locales, isDarkBG, version, pages, logoHref, hideWalletConnector, connectorButtons, headerButtons} = props;
 
   let forcedLocale;
   if (locales.length === 1) {
@@ -101,6 +102,7 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
                 </div>
               </div>
               <Header
+                connectorButtons={connectorButtons}
                 logoHref={logoHref}
                 hideWalletConnector={hideWalletConnector}
                 pages={pages}

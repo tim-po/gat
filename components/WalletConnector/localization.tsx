@@ -15,10 +15,6 @@ export default {
     en: 'Copied',
     ja: 'コピー機'
   },
-  collection:{
-    en: 'Collection',
-    ja: 'コレクション'
-  },
   disconnectWallet:{
     en: 'Disconnect wallet',
     ja: 'ウォレットの接続を解除する'
