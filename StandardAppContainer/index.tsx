@@ -9,11 +9,12 @@ import {useWeb3React} from "@web3-react/core";
 import {useLocale} from "../hooks/useLocale";
 import LocaleContext from "../LocaleContext";
 import NotificationContext from "../utils/NotificationContext";
+import UserDataContext from "../UserDataContext";
 import "./index.css";
 import "../styles.scss";
 import {ConfigProvider} from "antd";
 import WalletConnectorBubbleContext from "Standard/WalletConnectorBubbleContext";
-import styled, {css} from "styled-components";
+import styled from "styled-components";
 import {HeaderButton} from "../components/WalletConnector";
 
 const defaultProps = {
@@ -36,12 +37,14 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
     forcedLocale = locales[0];
   }
   // @ts-ignore
-  const {active, activate, networkError} = useWeb3React();
+  const {active, activate, networkError, account} = useWeb3React();
   const {setLocale, locale} = useLocale(forcedLocale);
   const [shouldDisplayNotification, setShouldDisplayNotification] = useState(false);
   const [notificationTitle, setNotificationTitle] = useState('')
   const [notificationSubtitle, setNotificationSubtitle] = useState('')
   const [notificationIcon, setNotificationIcon] = useState<ReactNode>(null)
+
+  const [isUserVerified, setIsUserVerified] = useState(false)
 
   useConnectionCheck();
 
@@ -56,14 +59,6 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
     }
   }
 
-  useEffect(() => {
-    injected.isAuthorized().then((isAuthorized) => {
-      if (isAuthorized && !active && !networkError) {
-        activate(injected);
-      }
-    });
-  }, [activate, networkError]);
-
   const displayNotification = (title: string, subtitle: string, icon: ReactNode) => {
     setNotificationIcon(icon)
     setNotificationTitle(title)
@@ -74,48 +69,77 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
     }, 2500);
   };
 
+  async function getUserData() {
+    const getUserDataUrl = `https://back2.kyc.marketmaking.pro/api/validation?wallet=${account}`;
+
+    const requestOptions = {
+      method: "GET",
+      headers: {"Content-Type": "application/json"},
+    };
+
+    fetch(getUserDataUrl, requestOptions)
+      .then(res => res.json())
+      .then(json => setIsUserVerified(json.data.isVerified));
+  }
+
+  useEffect(() => {
+    injected.isAuthorized().then((isAuthorized) => {
+      if (isAuthorized && !active && !networkError) {
+        activate(injected);
+      }
+    });
+  }, [activate, networkError]);
+
+  useEffect(() => {
+    if (account) {
+      getUserData()
+    }
+  }, [account])
+
   return (
     // @ts-ignore
     <ConfigProvider getPopupContainer={trigger => trigger.parentElement}>
       <LocaleContext.Provider value={{setLocale, locale}}>
-        <WalletConnectorBubbleContext.Provider value={{
-          setBubbleValue: setBubbleValue,
-          bubbleValue: bubbleValue,
-          setAccentedControlButton: changeAccentedButton,
-          accentedControlButton: accentedControlButton
-        }}>
-          <NotificationContext.Provider
-            value={{
-              displayNotification
-            }}
-          >
-            <div className={`main-content-container ${isDarkBG ? "main-gradient" : "main-gradient-light"}`}>
-              <div className={`notification ${shouldDisplayNotification ? "shown" : ""}`}>
-                <TitleWrapper>
-                  {notificationIcon}
-                  <div className={"notification-title"}>
-                    {notificationTitle}
-                  </div>
-                </TitleWrapper>
-                <div className={"notification-body"}>
-                  {notificationSubtitle}
-                </div>
-              </div>
-              <Header
-                connectorButtons={connectorButtons}
-                logoHref={logoHref}
-                hideWalletConnector={hideWalletConnector}
-                pages={pages}
-                locales={locales}
-                headerButtons={headerButtons}
-              />
-              <div className={"children-container"}>
-                {props.children}
-                <Footer version={version}/>
-              </div>
-            </div>
-          </NotificationContext.Provider>
-        </WalletConnectorBubbleContext.Provider>
+       <UserDataContext.Provider value={{isUserVerified}}>
+         <WalletConnectorBubbleContext.Provider value={{
+           setBubbleValue: setBubbleValue,
+           bubbleValue: bubbleValue,
+           setAccentedControlButton: changeAccentedButton,
+           accentedControlButton: accentedControlButton
+         }}>
+           <NotificationContext.Provider
+             value={{
+               displayNotification
+             }}
+           >
+             <div className={`main-content-container ${isDarkBG ? "main-gradient" : "main-gradient-light"}`}>
+               <div className={`notification ${shouldDisplayNotification ? "shown" : ""}`}>
+                 <TitleWrapper>
+                   {notificationIcon}
+                   <div className={"notification-title"}>
+                     {notificationTitle}
+                   </div>
+                 </TitleWrapper>
+                 <div className={"notification-body"}>
+                   {notificationSubtitle}
+                 </div>
+               </div>
+               <Header
+                 connectorButtons={connectorButtons}
+                 logoHref={logoHref}
+                 hideWalletConnector={hideWalletConnector}
+                 pages={pages}
+                 locales={locales}
+                 headerButtons={headerButtons}
+               />
+               <div className={"children-container"}>
+                 {props.children}
+                 <Footer version={version}/>
+               </div>
+             </div>
+           </NotificationContext.Provider>
+         </WalletConnectorBubbleContext.Provider>
+       </UserDataContext.Provider>
       </LocaleContext.Provider>
     </ConfigProvider>
   );
