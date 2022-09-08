@@ -12,10 +12,13 @@ import {injected, switchNetwork, walletconnect} from "../../wallet";
 import Swoosh from '../../images/NegativeBorderRadiusRight'
 import WalletConnectorBubbleContext from "../../WalletConnectorBubbleContext";
 import NotificationContext from "../../utils/NotificationContext";
+import UserDataContext from "../../UserDataContext";
 import DisconnectWallletIcon from '../../icons/notificationIcon/index'
 import button from "../Button";
+import WarningCircle from '../../icons/WarningCircle';
+import PersonalData from '../../icons/PersonalData';
 
-export type HeaderButton = ((props: { onClick: () => void;}) => JSX.Element)
+export type HeaderButton = ((props: { onClick: () => void; }) => JSX.Element)
 // CONSTANTS
 
 // DEFAULT FUNCTIONS
@@ -35,10 +38,10 @@ const WalletConnector = (props: WalletConnectorPropType) => {
   const {locale} = useContext(LocaleContext)
   const {bubbleValue} = useContext(WalletConnectorBubbleContext)
   const notificationContext = useContext(NotificationContext)
+  const {isUserVerified} = useContext(UserDataContext)
   const {chainId, account, deactivate, activate, active, connector, error} = useWeb3React();
   const ref = useRef(null);
   const {buttons} = props
-
   const [isConnectorOpen, setIsConnectorOpen] = useState(false)
   const [isCopyShowing, setIsCopyShowing] = useState(false)
 
@@ -114,7 +117,8 @@ const WalletConnector = (props: WalletConnectorPropType) => {
           {active &&
             <>
               <MetamaskJazzicon/>
-              <span className={`connect-title ${isConnectorOpen ? 'open' : ''}`} style={{height: 30}}>{localized(texts.profile, locale)}</span>
+              <span className={`connect-title ${isConnectorOpen ? 'open' : ''}`}
+                    style={{height: 30}}>{localized(texts.profile, locale)}</span>
             </>
           }
           {!active &&
@@ -143,34 +147,24 @@ const WalletConnector = (props: WalletConnectorPropType) => {
               <button
                 className={`connection-button`}
                 style={{paddingLeft: 0, paddingRight: 0}}
-                // onClick={() => {
-                //   window.open('https://kyc-7pb.pages.dev/', '_blank')
-                //   setIsConnectorOpen(false)
-                // }}
+                onClick={() => {
+                  window.open('https://kyc-7pb.pages.dev/', '_blank')
+                  setIsConnectorOpen(false)
+                }}
               >
                 <div className={'bordered'}>
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="8" cy="8" r="8" fill="#FFB627"/>
-                    <path
-                      d="M9 5.54595L8.53479 9.75561C8.50498 10.0253 8.27708 10.2294 8.00574 10.2294V10.2294C7.73496 10.2294 7.50733 10.0261 7.47686 9.75703L7 5.54595V4C7 3.44772 7.44772 3 8 3V3C8.55228 3 9 3.44772 9 4V5.54595ZM7.99681 11.0327C8.52262 11.0327 8.94888 11.4589 8.94888 11.9848V12.0479C8.94888 12.5737 8.52262 13 7.99681 13V13C7.47099 13 7.04473 12.5737 7.04473 12.0479V11.9848C7.04473 11.4589 7.47099 11.0327 7.99681 11.0327V11.0327Z"
-                      fill="white"/>
-                  </svg>
+                  {isUserVerified ? <PersonalData/> : <WarningCircle/>}
                   <div style={{marginRight: 12}}/>
-                  {localized(texts.verifyPersonalData, locale)}
+                  {isUserVerified ? localized(texts.personalData, locale) : localized(texts.verifyPersonalData, locale)}
                   <div style={{marginRight: 12}}/>
-                  {/*<svg width="19" height="16" viewBox="0 0 19 16" fill="none" xmlns="http://www.w3.org/2000/svg">*/}
-                  {/*  <path*/}
-                  {/*    d="M18.7071 8.70711C19.0976 8.31658 19.0976 7.68342 18.7071 7.29289L12.3431 0.928932C11.9526 0.538408 11.3195 0.538408 10.9289 0.928932C10.5384 1.31946 10.5384 1.95262 10.9289 2.34315L16.5858 8L10.9289 13.6569C10.5384 14.0474 10.5384 14.6805 10.9289 15.0711C11.3195 15.4616 11.9526 15.4616 12.3431 15.0711L18.7071 8.70711ZM0 9L18 9V7L0 7L0 9Z"*/}
-                  {/*    fill="white"/>*/}
-                  {/*</svg>*/}
                 </div>
               </button>
               {buttons.map((item, index) => {
-                  const Component = item
-                  return (
-                    <Component key={index} onClick={onClickConnectorButton}/>
-                  )
-                })
+                const Component = item
+                return (
+                  <Component key={index} onClick={onClickConnectorButton}/>
+                )
+              })
               }
               <button
                 className="connection-button"
@@ -209,7 +203,7 @@ const WalletConnector = (props: WalletConnectorPropType) => {
                 className={`connection-button`}
                 onClick={() => {
                   activate(walletconnect).then(() => {
-                     window.location.reload()
+                    window.location.reload()
                   });
                 }}
               >

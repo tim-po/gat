@@ -43,12 +43,10 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
   const [notificationTitle, setNotificationTitle] = useState('')
   const [notificationSubtitle, setNotificationSubtitle] = useState('')
   const [notificationIcon, setNotificationIcon] = useState<ReactNode>(null)
-
+  const [bubbleValue, setBubbleValue] = useState('');
   const [isUserVerified, setIsUserVerified] = useState(false)
 
   useConnectionCheck();
-
-  const [bubbleValue, setBubbleValue] = useState('');
 
   const displayNotification = (title: string, subtitle: string, icon: ReactNode) => {
     setNotificationIcon(icon)
@@ -60,7 +58,7 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
     }, 2500);
   };
 
-  async function getUserData() {
+  async function getUserVerification() {
     const getUserDataUrl = `https://back2.kyc.marketmaking.pro/api/validation?wallet=${account}`;
 
     const requestOptions = {
@@ -83,7 +81,7 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
 
   useEffect(() => {
     if (account) {
-      getUserData()
+      getUserVerification()
     }
   }, [account])
 
