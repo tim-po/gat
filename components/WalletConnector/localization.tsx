@@ -8,9 +8,14 @@ export default {
     ja: 'コネクトウォレット'
   },
   verifyPersonalData: {
-    en: 'KYC Verification coming soon...',
-    ja: 'KYC検証は近日公開予定...'
+    en: 'Verify personal data',
+    ja: '個人データの確認'
   },
+  personalData: {
+    en: 'Personal data',
+    ja: '個人データ'
+  },
+
   copied:{
     en: 'Copied',
     ja: 'コピー機'
