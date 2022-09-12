@@ -19,6 +19,7 @@ export default {
     en: 'Personal data',
     ja: '個人データ'
   },
+
   copied:{
     en: 'Copied',
     ja: 'コピー機'
