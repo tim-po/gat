@@ -7,6 +7,10 @@ export default {
     en: 'Connect Wallet',
     ja: 'コネクトウォレット'
   },
+  KYCComingSoon: {
+    en: "KYC coming soon",
+    ja: "近日中にKYC"
+  },
   verifyPersonalData: {
     en: 'Verify personal data',
     ja: '個人データの確認'
