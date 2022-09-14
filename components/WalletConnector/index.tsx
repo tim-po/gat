@@ -147,15 +147,17 @@ const WalletConnector = (props: WalletConnectorPropType) => {
               <button
                 className={`connection-button`}
                 style={{paddingLeft: 0, paddingRight: 0}}
-                onClick={() => {
-                  window.open('https://kyc-7pb.pages.dev/', '_blank')
-                  setIsConnectorOpen(false)
-                }}
+                // onClick={() => {
+                //   window.open('https://kyc-7pb.pages.dev/', '_blank')
+                //   setIsConnectorOpen(false)
+                // }}
               >
                 <div className={'bordered'}>
-                  {isUserVerified ? <PersonalData/> : <WarningCircle/>}
+                  {/*{isUserVerified ? <PersonalData/> : <WarningCircle/>}*/}
+                  <WarningCircle/>
                   <div style={{marginRight: 12}}/>
-                  {isUserVerified ? localized(texts.personalData, locale) : localized(texts.verifyPersonalData, locale)}
+                  {/*{isUserVerified ? localized(texts.personalData, locale) : localized(texts.verifyPersonalData, locale)}*/}
+                  {localized(texts.KYCComingSoon, locale)}
                   <div style={{marginRight: 12}}/>
                 </div>
               </button>
