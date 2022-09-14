@@ -16,6 +16,7 @@ import {ConfigProvider} from "antd";
 import WalletConnectorBubbleContext from "Standard/WalletConnectorBubbleContext";
 import styled from "styled-components";
 import {HeaderButton} from "../components/WalletConnector";
+import * as Sentry from "@sentry/react";
 
 const defaultProps = {
   locales: ["en"]
@@ -82,6 +83,7 @@ const StandardAppContainer = (props: { headerButtons?: React.ReactElement[], log
   useEffect(() => {
     if (account) {
       getUserVerification()
+      Sentry.setUser({ id: account });
     }
   }, [account])
 
