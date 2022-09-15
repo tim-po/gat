@@ -1,6 +1,6 @@
 export const getBUSDAddress = () => {
     // main-net
-    return "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";
+    return "0xe9e7cea3dedca5984780bafc599bd69add087d56";
     // test-net
     // return "0xe10fecd363459964cecff2e91feb3cdee3aa7e21";
 };

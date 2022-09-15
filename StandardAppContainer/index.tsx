@@ -13,7 +13,7 @@ import UserDataContext from "../UserDataContext";
 import "./index.css";
 import "../styles.scss";
 import {ConfigProvider} from "antd";
-import WalletConnectorBubbleContext from "Standard/WalletConnectorBubbleContext";
+import WalletConnectorBubbleContext from "../WalletConnectorBubbleContext";
 import styled from "styled-components";
 import {HeaderButton} from "../components/WalletConnector";
 import * as Sentry from "@sentry/react";
