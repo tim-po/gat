@@ -3,7 +3,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import StandardAppContainer from "./Standard/StandardAppContainer";
 import {
-  useAllocationMarketplaceContract,
   useAllocationPaymentReceiverContract, useNftContract,
 } from "./hooks/useContract";
 import {useBUSDContract} from './Standard/hooks/useCommonContracts'
@@ -126,7 +125,6 @@ type Tear = {
 const App = () => {
 
   const {account} = useWeb3React()
-  const marketplaceContract = useAllocationMarketplaceContract()
   const allocationContract = useAllocationPaymentReceiverContract()
   const busdContract = useBUSDContract()
   const nftContract = useNftContract()
@@ -261,7 +259,7 @@ const App = () => {
   const maxallocation = wei2eth(nftTears[userMaxTier]?.maxAllocationAmount.toString())
 
   return (
-    <StandardAppContainer version={'1.0.1'} locales={['en']}>
+    <StandardAppContainer version={'1.0.1'} locales={['en']} connectorButtons={[]}>
       <AllocationContainer>
         <div>
           {transactionError ?

@@ -1,3 +1,2 @@
-export const AllocationPaymentReceiverAddress = '0xFAcaF89163478e7b3166D9275EF12ee62022153A'
-export const AllocationMarketplaceAddress = '0x268c3a9614D96e86177C0Ed5043317FDA972Ab18'
-export const NFTAddress = '0xc74BF2fa411214ac226aa1b7BE6801186d1f2c5D'
+export const AllocationPaymentReceiverAddress = '0xe610f633A09CdD44d4e86141FFeD81fA453dEa0C'
+export const NFTAddress = '0xC4e1989C880A56872FD58214a8Eb1826BdccB136'
