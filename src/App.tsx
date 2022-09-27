@@ -21,6 +21,8 @@ import {AllocationPaymentReceiverAddress} from "./config/constants/contract";
 import './styles.scss'
 import {wei2eth} from "./Standard/utils/common";
 import GradientCircles from "./Standard/decorations/GradientCircles";
+import Disconnect from "./components/ConnectorButtons/Disconnect";
+import Wallet from "./components/ConnectorButtons/Wallet";
 
 interface ButtonProps {
   background: string;
@@ -271,7 +273,7 @@ const App = () => {
 
   return (
     <>
-      <StandardAppContainer version={'1.0.1'} locales={['en']} connectorButtons={[]}>
+      <StandardAppContainer version={'1.0.1'} locales={['en']} connectorButtons={[<Wallet/>, <Disconnect/>]}>
         <AllocationContainer>
           <div>
             {transactionError ?
