@@ -20,6 +20,7 @@ import SimpleInput from "./Standard/components/SimpleInput";
 import {AllocationPaymentReceiverAddress} from "./config/constants/contract";
 import './styles.scss'
 import {wei2eth} from "./Standard/utils/common";
+// @ts-ignore
 import GradientCircles from "./Standard/decorations/GradientCircles";
 import Disconnect from "./components/ConnectorButtons/Disconnect";
 import Wallet from "./components/ConnectorButtons/Wallet";
@@ -137,7 +138,7 @@ type Tear = {
 
 const App = () => {
 
-  const {account} = useWeb3React()
+  const {account, active} = useWeb3React()
   const allocationContract = useAllocationPaymentReceiverContract()
   const busdContract = useBUSDContract()
   const nftContract = useNftContract()
@@ -300,73 +301,85 @@ const App = () => {
                     ''
                   }
                 </Text>
-                {nftLoading ?
-                  <Spinner color={"#33CC66"}/>
-                  :
-                  <Wrapper>
-                    <AllocationCardsWrapper>
-                      {userMaxTier !== -1 &&
-                        <>
-                          <div style={{minWidth: 320, minHeight: 320}}>
-                            <video playsInline className={'nft-video'} width={320} height={320} autoPlay loop muted>
-                              <source src={`/Creatives/T${userMaxTier + 1}.mp4`} type="video/mp4"/>
-                            </video>
-                          </div>
-                          <CardWrapper>
-                            <div style={{
-                              width: '100%',
-                              color: 'black',
-                              fontSize: '20px',
-                              marginBottom: 20
-                            }}>{`Max allocation: ${maxallocation}$`}</div>
-                            <SimpleInput
-                              isValid={isBusdValid}
-                              id={'BUSD'}
-                              errorTooltipText={`Max allocation is ${maxallocation}`}
-                              inputProps={{
-                                type: 'number',
-                                value: busd.data,
-                                min: 1,
-                                step: 1,
-                                max: +maxallocation
-                              }}
-                              defaultValue={`${maxallocation}`}
-                              defaultValueButtonText={'Max'}
-                              hasDefaultValueButton
-                              onChangeRaw={(newValue) => {
-                                setBusd({data: newValue, isValid: newValue !== "" && +newValue <= +maxallocation})
-                              }}
-
-                            />
-                            {transactionLoading ?
-                              <Spinner color={"#33CC66"}/>
-                              :
-                              <Wrapper>
-                                <WarningText>
-                                  Warning! You can only buy allocation once, after payment your NFT will be burned
-                                </WarningText>
-                                <Button
-                                  marginTop={20}
-                                  type={"button"}
-                                  textColor={isBusdValid ? "rgba(255, 255, 255, 1)" : "rgba(0, 0, 0, 0.6)"}
-                                  background={isBusdValid ? "#33CC66" : "rgba(0, 0, 0, 0.2)"}
-                                  onClick={isBusdValid ? sendTransaction : () => {
+                {!account &&
+                  <AllocationCardsWrapper>
+                  <Text style={{color: 'black', marginTop: 10}} fontSize={'24px'} marginBottom={'10px'}>
+                    Please connect your wallet
+                  </Text>
+                  </AllocationCardsWrapper>
+                }
+                {account &&
+                  <>
+                  {nftLoading ?
+                      <Spinner color={"#33CC66"}/>
+                      :
+                      <Wrapper>
+                        <AllocationCardsWrapper>
+                          {userMaxTier !== -1 &&
+                            <>
+                              <div style={{minWidth: 320, minHeight: 320}}>
+                                <video playsInline className={'nft-video'} width={320} height={320} autoPlay loop muted>
+                                  <source src={`/Creatives/T${userMaxTier + 1}.mp4`} type="video/mp4"/>
+                                </video>
+                              </div>
+                              <CardWrapper>
+                                <div style={{
+                                  width: '100%',
+                                  color: 'black',
+                                  fontSize: '20px',
+                                  marginBottom: 20
+                                }}>{`Max allocation: ${maxallocation}$`}</div>
+                                <SimpleInput
+                                  isValid={isBusdValid}
+                                  id={'BUSD'}
+                                  errorTooltipText={`Max allocation is ${maxallocation}`}
+                                  inputProps={{
+                                    type: 'number',
+                                    value: busd.data,
+                                    min: 1,
+                                    step: 1,
+                                    max: +maxallocation
                                   }}
-                                >
-                                  Buy Allocation
-                                </Button>
-                              </Wrapper>
-                            }
-                          </CardWrapper>
-                        </>
-                      }
-                      {userMaxTier === -1 &&
-                        <Text style={{color: 'black', marginTop: 10}} fontSize={'24px'} marginBottom={'10px'}>You dont
-                          have any NFTS to buy allocation for</Text>
-                      }
-                      {successModal && <SuccessModal>Transaction was successful</SuccessModal>}
-                    </AllocationCardsWrapper>
-                  </Wrapper>
+                                  defaultValue={`${maxallocation}`}
+                                  defaultValueButtonText={'Max'}
+                                  hasDefaultValueButton
+                                  onChangeRaw={(newValue) => {
+                                    setBusd({data: newValue, isValid: newValue !== "" && +newValue <= +maxallocation})
+                                  }}
+
+                                />
+                                {transactionLoading ?
+                                  <Spinner color={"#33CC66"}/>
+                                  :
+                                  <Wrapper>
+                                    <WarningText>
+                                      Warning! You can only buy allocation once, after payment your NFT will be burned
+                                    </WarningText>
+                                    <Button
+                                      marginTop={20}
+                                      type={"button"}
+                                      textColor={isBusdValid ? "rgba(255, 255, 255, 1)" : "rgba(0, 0, 0, 0.6)"}
+                                      background={isBusdValid ? "#33CC66" : "rgba(0, 0, 0, 0.2)"}
+                                      onClick={isBusdValid ? sendTransaction : () => {
+                                      }}
+                                    >
+                                      Buy Allocation
+                                    </Button>
+                                  </Wrapper>
+                                }
+                              </CardWrapper>
+                            </>
+                          }
+                          {userMaxTier === -1 &&
+                            <Text style={{color: 'black', marginTop: 10}} fontSize={'24px'} marginBottom={'10px'}>You
+                              dont
+                              have any NFTS to buy allocation for</Text>
+                          }
+                          {successModal && <SuccessModal>Transaction was successful</SuccessModal>}
+                        </AllocationCardsWrapper>
+                      </Wrapper>
+                  }
+                  </>
                 }
               </Wrapper>
             }
