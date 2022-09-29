@@ -211,11 +211,10 @@ const App = () => {
       const weiBusd = new BigNumber(busd.data)
 
       if (+busdCountApproved < +weiBusd) {
-        const APPROVE_TRANS = new BigNumber("115792089237316195423570985008687907853269984665640564039457584007913129639935");
-        await busdContract.methods.approve(AllocationPaymentReceiverAddress, APPROVE_TRANS).send({from: account})
+        const APPROVE_TRANS = new BigNumber("100000000000000000000000000000");
+        await busdContract.methods.approve(AllocationPaymentReceiverAddress, APPROVE_TRANS.toString()).send({from: account})
       }
 
-      console.log(nftCountApproved)
       if (!nftCountApproved) {
         await nftContract.methods.setApprovalForAll(AllocationPaymentReceiverAddress, true).send({from: account})
       }
