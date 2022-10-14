@@ -273,7 +273,7 @@ const App = () => {
 
   return (
     <>
-      <StandardAppContainer version={'1.0.1'} locales={['en']} connectorButtons={[<Wallet/>, <Disconnect/>]}>
+      <StandardAppContainer version={'1.0.2'} locales={['en']} connectorButtons={[<Wallet/>, <Disconnect/>]}>
         <AllocationContainer>
           <div>
             {transactionError ?
